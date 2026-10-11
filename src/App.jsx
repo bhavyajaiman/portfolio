@@ -3,6 +3,15 @@ import { useState } from "react";
 import "./App.css";
 
 const applications = [
+
+  {
+    id: "files",
+    number: "00",
+    icon: "▰",
+    title: "FILE MANAGER",
+    subtitle: "Browse research files",
+    description: "Browse academic and research directories.",
+  },
   {
     id: "research",
     number: "01",
@@ -38,6 +47,19 @@ const applications = [
 ];
 
 const windowContent = {
+
+  files: {
+    label: "FILE MANAGER",
+    heading: "C:\\USERS\\BHAVYA\\DESKTOP",
+    intro: "ACADEMIC WORKSTATION / DIRECTORY LISTING",
+    records: [
+      ["DIR", "01_RESEARCH", "Research interests, methods, and NISAR work."],
+      ["DIR", "02_PUBLICATIONS", "Papers and conference proceedings."],
+      ["DIR", "03_PROJECTS", "Research projects and experiments."],
+      ["PDF", "04_ACADEMIC_CV", "Academic profile, experience, and qualifications."],
+    ],
+  },
+
   research: {
     label: "RESEARCH DATABASE",
     heading: "Research interests",
@@ -356,7 +378,9 @@ function App() {
         </div>
 
         <div className="desktop-icons">
-          {applications.map((app) => (
+          {applications
+            .filter((app) => app.id === "files")
+            .map((app) => (
             <button
               className="desktop-icon"
               key={app.id}
@@ -465,19 +489,49 @@ function App() {
 
                   {id === "cv" && content.sections ? (
                     renderCV(content, id)
-                  ) : (
-                    <div className="record-list">
-                      {content.records?.map(
-                        ([number, title, description]) => (
-                          <article className="record" key={number}>
-                            <span className="record-number">{number}</span>
+                  ) : id === "files" ? (
+                    <div className="file-list">
+                      {content.records?.map(([type, title, description]) => {
+                        const destinations = {
+                          "01_RESEARCH": "research",
+                          "02_PUBLICATIONS": "publications",
+                          "03_PROJECTS": "projects",
+                          "04_ACADEMIC_CV": "cv",
+                        };
+
+                        return (
+                          <article
+                            className="record"
+                            key={title}
+                            onDoubleClick={() => {
+                              if (navigator.vibrate) {
+                                navigator.vibrate(15);
+                              }
+
+                              openWindow(destinations[title]);
+                            }}
+                            title="Double-click to open"
+                          >
+                            <span className="record-number">{type}</span>
                             <div>
                               <h3>{title}</h3>
                               <p>{description}</p>
                             </div>
                           </article>
-                        )
-                      )}
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="record-list">
+                      {content.records?.map(([number, title, description]) => (
+                        <article className="record" key={number}>
+                          <span className="record-number">{number}</span>
+                          <div>
+                            <h3>{title}</h3>
+                            <p>{description}</p>
+                          </div>
+                        </article>
+                      ))}
                     </div>
                   )}
                 </div>

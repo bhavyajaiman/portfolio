@@ -1053,3 +1053,179 @@ body,
     max-width: calc(100vw - 20px);
   }
 }
+
+
+/* Monochrome file manager */
+
+.file-list {
+  width: 100%;
+  border: 1px solid #444;
+  background: #090909;
+}
+
+.file-list-header,
+.file-row {
+  display: grid;
+  grid-template-columns: 55px minmax(150px, 1fr) minmax(160px, 1.5fr);
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  text-align: left;
+  font-family: "IBM Plex Mono", "Courier New", monospace;
+  font-size: 11px;
+}
+
+.file-list-header {
+  border-bottom: 1px solid #555;
+  background: #171717;
+  color: #aaa;
+  font-size: 9px;
+  letter-spacing: 0.7px;
+}
+
+.file-row {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid #282828;
+  background: #0b0b0b;
+  color: #ddd;
+  cursor: pointer;
+}
+
+.file-row:last-child {
+  border-bottom: 0;
+}
+
+.file-row:hover,
+.file-row.file-selected {
+  background: #242424;
+  outline: 1px solid #666;
+  outline-offset: -1px;
+}
+
+.file-type {
+  color: #aaa;
+}
+
+.file-name {
+  color: #fff;
+}
+
+.file-description {
+  color: #999;
+  line-height: 1.6;
+}
+
+@media (max-width: 640px) {
+  .file-list-header,
+  .file-row {
+    grid-template-columns: 35px minmax(0, 1fr);
+    gap: 8px;
+    padding: 10px;
+    font-size: 10px;
+  }
+
+  .file-list-header > :last-child,
+  .file-description {
+    display: none;
+  }
+}
+
+.file-list .record {
+  cursor: pointer;
+  transition:
+    background-color 100ms ease,
+    transform 80ms ease,
+    border-color 100ms ease;
+}
+
+.file-list .record:hover {
+  background-color: #1a1a1a;
+  border-color: #777;
+}
+
+.file-list .record:active {
+  background-color: #292929;
+  transform: scale(0.99);
+}
+
+.file-list .record h3 {
+  transition: color 100ms ease;
+}
+
+.file-list .record:hover h3 {
+  color: #ffffff;
+}
+
+
+/* FILE MANAGER — GRID LAYOUT */
+
+.file-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 12px;
+  padding: 12px;
+  align-content: start;
+}
+
+.file-list .record {
+  min-width: 0;
+  min-height: 135px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid #444;
+  background: #080808;
+  cursor: pointer;
+  transition:
+    background-color 100ms ease,
+    border-color 100ms ease,
+    transform 80ms ease;
+}
+
+.file-list .record:hover {
+  background: #1a1a1a;
+  border-color: #aaa;
+}
+
+.file-list .record:active {
+  background: #292929;
+  transform: scale(0.98);
+}
+
+.file-list .record-number {
+  font-size: 11px;
+  color: #999;
+  letter-spacing: 1px;
+}
+
+.file-list .record h3 {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.file-list .record p {
+  margin: 0;
+  color: #999;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+@media (max-width: 500px) {
+  .file-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .file-list .record {
+    min-height: 125px;
+    padding: 10px;
+  }
+}
