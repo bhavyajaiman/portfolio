@@ -1,399 +1,813 @@
 
-@import url("https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Roboto+Condensed:wght@400;500;600;700&display=swap");
+/* Application navigation bar */
 
-:root {
-  font-family: "Roboto Condensed", sans-serif;
-  color: #c8e4f1;
-  background: #030a12;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  font-weight: 400;
-
-  --bg: #030810;
-  --panel: #081824;
-  --panel-light: #102b3c;
-  --border: #12617e;
-  --border-bright: #12c9ed;
-  --cyan: #00c9ed;
-  --text: #c8e4f1;
-  --muted: #7199ae;
-  --yellow: #c7d34b;
+.application-bar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  min-height: 43px;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--border-bright);
+  background: #07131f;
 }
 
-* {
-  box-sizing: border-box;
+.bar-label,
+.nav-item,
+.bar-clock {
+  flex-shrink: 0;
+  padding: 13px 15px;
+  font-family: "Share Tech Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.5px;
 }
 
-body {
+.bar-label {
+  color: #d2e5ef;
+  border-right: 1px solid var(--border);
+}
+
+.nav-item {
+  border: 0;
+  border-right: 1px solid #164158;
+  background: transparent;
+  color: #84aabe;
+  cursor: pointer;
+}
+
+.nav-item:hover,
+.nav-item-active {
+  background: #10354a;
+  color: var(--cyan);
+}
+
+.bar-clock {
+  margin-left: auto;
+  color: #16c9eb;
+}
+
+/* Make application cards behave like interface buttons */
+
+button.application-card {
+  width: 100%;
+  color: inherit;
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+button.application-card:focus-visible,
+.nav-item:focus-visible,
+.window-close:focus-visible,
+.text-action:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+
+/* Interactive application window */
+
+.window-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  overflow-y: auto;
+  background: #000912d9;
+  backdrop-filter: blur(3px);
+}
+
+.app-window {
+  width: min(720px, 100%);
+  max-height: min(780px, calc(100vh - 40px));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--border-bright);
+  background: #06111c;
+  box-shadow: 0 0 45px #00c9ed20;
+  animation: window-appear 160ms ease-out;
+}
+
+.window-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 48px;
+  padding-left: 18px;
+  border-bottom: 1px solid var(--border-bright);
+  background: linear-gradient(90deg, #10405a, #0a2030);
+  color: #e0f0f8;
+  font-family: "Share Tech Mono", monospace;
+  font-size: 12px;
+  letter-spacing: 0.8px;
+}
+
+.window-titlebar > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.window-indicator {
+  width: 7px;
+  height: 7px;
+  background: var(--cyan);
+  box-shadow: 0 0 9px #00c9ed88;
+}
+
+.window-close {
+  align-self: stretch;
+  width: 48px;
+  border: 0;
+  border-left: 1px solid #21617a;
+  background: transparent;
+  color: var(--cyan);
+  font-size: 27px;
+  cursor: pointer;
+}
+
+.window-close:hover {
+  background: #b52c3933;
+  color: #ff747d;
+}
+
+.window-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px;
+  padding: 11px 18px;
+  border-bottom: 1px solid #164158;
+  background: #091a28;
+  color: #76a5bb;
+  font-family: "Share Tech Mono", monospace;
+  font-size: 9px;
+}
+
+.window-body {
+  padding: 30px;
+  overflow-y: auto;
+}
+
+.window-body .eyebrow {
+  overflow-wrap: anywhere;
+  margin-bottom: 12px;
+}
+
+.window-body > h2 {
   margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-  background:
-    repeating-linear-gradient(
-      0deg,
-      transparent 0px,
-      transparent 3px,
-      #8acbe006 4px
-    ),
-    radial-gradient(ellipse at 50% 0%, #0a2638 0%, transparent 58%),
-    var(--bg);
+  color: #e0f0f8;
+  font-size: clamp(25px, 5vw, 36px);
+  font-weight: 600;
+}
+
+.window-intro {
+  margin: 17px 0 26px;
+  color: #9bb9c9;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.record-list {
+  display: grid;
+  gap: 8px;
+}
+
+.record {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid #174359;
+  background: linear-gradient(110deg, #0b2333, #081722);
+}
+
+.record-number {
+  color: var(--cyan);
+  font-family: "Share Tech Mono", monospace;
+  font-size: 12px;
+}
+
+.record h3 {
+  margin: 0 0 6px;
+  color: #cde5f1;
+  font-family: "Share Tech Mono", monospace;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.record p {
+  margin: 0;
+  color: #88a9ba;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.notice-panel {
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid #16708a;
+  background: #082431;
+}
+
+.notice-label {
+  color: var(--cyan);
+  font-family: "Share Tech Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.notice-panel p,
+.window-note {
+  color: #a4c1d0;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.window-note {
+  margin: 22px 0 0;
+  padding: 13px;
+  border-left: 2px solid #c7d34b;
+  background: #c7d34b0b;
+}
+
+.window-statusbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 18px;
+  border-top: 1px solid #14516b;
+  background: #081925;
+  color: #79a3b7;
+  font-family: "Share Tech Mono", monospace;
+  font-size: 9px;
+}
+
+.text-action {
+  margin-top: 8px;
+  padding: 10px 13px;
+  border: 1px solid #13728e;
+  background: #082331;
+  color: var(--cyan);
+  font-family: "Share Tech Mono", monospace;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.text-action:hover {
+  background: #104057;
+}
+
+@keyframes window-appear {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.99);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 640px) {
+  .application-bar {
+    margin-inline: -14px;
+  }
+
+  .bar-label,
+  .nav-item,
+  .bar-clock {
+    padding: 13px 11px;
+    font-size: 9px;
+  }
+
+  .bar-clock {
+    display: none;
+  }
+
+  .window-backdrop {
+    padding: 10px;
+  }
+
+  .app-window {
+    max-height: calc(100vh - 20px);
+  }
+
+  .window-body {
+    padding: 20px 16px;
+  }
+
+  .window-toolbar {
+    gap: 13px;
+    font-size: 8px;
+  }
+
+  .record {
+    grid-template-columns: 26px minmax(0, 1fr);
+    gap: 10px;
+    padding: 13px 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-window {
+    animation: none;
+  }
+}
+
+
+/* Fix hero heading overlap */
+.hero h1 {
+  display: block;
+  max-width: 900px;
+  margin: 0;
+  color: #e2f1f8;
+  font-size: clamp(36px, 6vw, 72px);
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -1px;
+}
+
+.hero h1 span {
+  display: block;
+  color: #12c9ed;
+}
+
+
+/* Theme overrides */
+
+body,
+#root {
+  background-color: #030810;
 }
 
 .workstation {
-  width: min(1240px, calc(100% - 48px));
-  margin: 0 auto;
+  color: #c8e4f1;
 }
 
-.topbar {
-  min-height: 76px;
+.application-card {
+  display: block;
+  appearance: none;
+  border-radius: 0;
+  background: linear-gradient(135deg, #0d2636, #06121e 75%);
+  color: #c8e4f1;
+  text-align: left;
+}
+
+.application-card h3 {
+  color: #cfe8f4;
+}
+
+.application-card .card-description {
+  color: #87a9ba;
+}
+
+.hero-tags {
+  gap: 9px;
+}
+
+.hero-tags span {
+  display: inline-block;
+}
+
+@media (max-width: 640px) {
+  .hero h1 {
+    font-size: clamp(34px, 9vw, 48px);
+    line-height: 1.15;
+    letter-spacing: -0.8px;
+  }
+}
+
+
+.record p {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+
+/* Expandable academic CV records */
+
+.record {
+  display: block;
+  padding: 0;
+}
+
+.record-toggle {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) 24px;
+  align-items: start;
+  gap: 12px;
+  width: 100%;
+  padding: 17px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.record-toggle:hover {
+  background: #103044;
+}
+
+.record-toggle-content {
+  display: grid;
+  gap: 7px;
+}
+
+.record-toggle-title {
+  color: #cde8f4;
+  font-family: "Share Tech Mono", monospace;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.record-toggle-summary {
+  color: #88a9ba;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.record-chevron {
+  color: var(--cyan);
+  font-size: 20px;
+  text-align: center;
+}
+
+.record-details {
+  padding: 0 20px 20px 59px;
+  border-top: 1px solid #174359;
+  background: #06111c;
+}
+
+.details-label {
+  margin: 17px 0 12px;
+  color: var(--cyan);
+  font-family: "Share Tech Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.record-details ul {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding-left: 18px;
+  color: #a4c1d0;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.record-details li::marker {
+  color: var(--cyan);
+}
+
+.record-toggle:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: -2px;
+}
+
+@media (max-width: 640px) {
+  .record-toggle {
+    grid-template-columns: 24px minmax(0, 1fr) 20px;
+    gap: 9px;
+    padding: 14px 10px;
+  }
+
+  .record-details {
+    padding: 0 12px 17px 42px;
+  }
+}
+
+
+/* Clean desktop interface */
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  background: #030810;
+}
+
+.desktop {
+  min-height: 100vh;
   display: flex;
+  flex-direction: column;
+  color: #c8e4f1;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 3px,
+      #6cbdd008 4px
+    ),
+    radial-gradient(ellipse at 45% 35%, #0b2638 0%, transparent 65%),
+    #030810;
+  font-family: "Roboto Condensed", sans-serif;
+}
+
+.desktop-topbar {
+  height: 43px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-  border-bottom: 1px solid var(--border-bright);
+  gap: 16px;
+  padding: 0 18px;
+  border-bottom: 1px solid #12617e;
   background: #07131f;
-  box-shadow: 0 2px 16px #00c9ed12;
 }
 
-.brand {
+.desktop-brand,
+.desktop-status {
   display: flex;
   align-items: center;
-  gap: 13px;
+  gap: 10px;
+  font-family: "Share Tech Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.7px;
+}
+
+.desktop-brand {
+  color: #c8e4f1;
 }
 
 .brand-mark {
   display: grid;
   place-items: center;
-  width: 42px;
-  height: 42px;
-  border: 1px solid var(--border-bright);
-  background: #0b2637;
-  color: var(--cyan);
-  font-family: "Share Tech Mono", monospace;
-  font-size: 21px;
-  font-weight: 700;
+  width: 25px;
+  height: 25px;
+  border: 1px solid #1684a4;
+  color: #00c9ed;
 }
 
-.brand-name {
-  margin: 0 0 5px;
-  color: #d8edf7;
-  font-family: "Share Tech Mono", monospace;
-  font-size: 14px;
-  letter-spacing: 1.4px;
+.desktop-status {
+  color: #00c9ed;
 }
 
-.brand-caption {
-  margin: 0;
-  color: var(--muted);
-  font-family: "Share Tech Mono", monospace;
-  font-size: 9px;
-  letter-spacing: 1px;
-}
-
-.system-status {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  color: var(--cyan);
-  font-family: "Share Tech Mono", monospace;
-  font-size: 10px;
-  letter-spacing: 1px;
-}
-
-.status-light {
-  display: inline-block;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #00e7ff;
-  box-shadow: 0 0 10px #00c9edaa;
-}
-
-.hero {
+.desktop-area {
   position: relative;
-  padding: 80px 42px 68px;
-  border-right: 1px solid #12617e66;
-  border-bottom: 1px solid var(--border);
-  border-left: 1px solid #12617e66;
-  background: linear-gradient(110deg, #071824e8, #030a12f2 80%);
+  flex: 1;
+  min-height: calc(100vh - 85px);
+  padding: 24px;
 }
 
-.eyebrow {
-  margin: 0 0 20px;
-  color: var(--cyan);
-  font-family: "Share Tech Mono", monospace;
-  font-size: 11px;
-  letter-spacing: 1.5px;
-}
-
-.hero h1 {
-  max-width: 900px;
-  margin: 0;
-  color: #e2f1f8;
-  font-size: clamp(40px, 7vw, 78px);
-  line-height: 1.08;
-  font-weight: 700;
-  letter-spacing: -1.7px;
-  text-shadow: 0 0 24px #00bce91b;
-}
-
-.hero h1 span {
-  color: #12c9ed;
-}
-
-.hero-description {
-  max-width: 620px;
-  margin: 25px 0;
-  color: #91b7ca;
-  font-size: 16px;
-  line-height: 1.8;
-}
-
-.hero-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 9px;
-  margin-top: 28px;
-}
-
-.hero-tags span {
-  padding: 9px 11px;
-  border: 1px solid #15536e;
-  background: #071b29;
-  color: #8ccce1;
+.desktop-label {
+  color: #557f95;
   font-family: "Share Tech Mono", monospace;
   font-size: 9px;
-  letter-spacing: 0.6px;
+  letter-spacing: 1px;
 }
 
-.applications {
-  padding: 48px 0;
-}
-
-.section-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: end;
-  gap: 16px;
-  margin-bottom: 22px;
-}
-
-.section-heading .eyebrow {
-  margin-bottom: 10px;
-}
-
-.section-heading h2,
-.current-project h2 {
-  margin: 0;
-  color: #d8edf7;
-  font-size: clamp(23px, 4vw, 31px);
-  font-weight: 600;
-}
-
-.file-count {
-  padding-bottom: 5px;
-  color: #6e9eb5;
-  font-family: "Share Tech Mono", monospace;
-  font-size: 10px;
-  white-space: nowrap;
-}
-
-.application-grid {
+.desktop-icons {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 13px;
+  grid-template-columns: repeat(1, 92px);
+  align-content: start;
+  justify-items: center;
+  gap: 14px;
+  width: 110px;
+  margin-top: 25px;
 }
 
-.application-card {
-  position: relative;
-  min-height: 218px;
-  padding: 23px;
-  border: 1px solid #14516b;
-  background:
-    linear-gradient(135deg, #0d2636, #06121e 75%);
-  box-shadow: inset 0 0 20px #0089b00a;
-  transition: border-color 160ms ease, background 160ms ease;
-}
-
-.application-card:hover {
-  border-color: var(--border-bright);
-  background: linear-gradient(135deg, #10364a, #071824 80%);
-  box-shadow: inset 0 0 24px #00c9ed0b, 0 0 12px #00c9ed14;
-}
-
-.card-top {
+.desktop-icon {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  gap: 8px;
+  width: 90px;
+  min-height: 85px;
+  padding: 9px 3px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #c1dce9;
+  font-family: "Share Tech Mono", monospace;
+  font-size: 9px;
+  text-align: center;
+  overflow-wrap: anywhere;
+  cursor: pointer;
 }
 
-.app-icon {
+.desktop-icon:hover,
+.desktop-icon:focus-visible {
+  border-color: #12617e;
+  background: #0a2639bb;
+  outline: none;
+}
+
+.desktop-icon-symbol {
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
-  border: 1px solid #1684a4;
-  background: #082637;
+  width: 43px;
+  height: 43px;
+  border: 1px solid #1883a2;
+  background: linear-gradient(135deg, #123b50, #071724);
   color: #12c9ed;
-  font-size: 21px;
+  font-size: 24px;
+  box-shadow: inset 0 0 14px #00c9ed0a;
 }
 
-.app-id {
-  color: #648ca2;
+.desktop-hint {
+  position: absolute;
+  right: 25px;
+  bottom: 35px;
+  color: #426a7e;
+  font-family: "Share Tech Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+}
+
+.desktop-window {
+  position: absolute;
+  top: 35px;
+  left: 145px;
+  width: min(820px, calc(100% - 175px));
+  max-height: calc(100% - 70px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #1595b9;
+  background: #06111c;
+  box-shadow: 0 12px 45px #0009, 0 0 14px #00c9ed12;
+}
+
+.window-titlebar {
+  min-height: 39px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #12617e;
+  background: linear-gradient(90deg, #10405a, #0a2030);
+}
+
+.window-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 14px;
+  color: #d8edf7;
+  font-family: "Share Tech Mono", monospace;
+  font-size: 11px;
+}
+
+.window-controls {
+  display: flex;
+  align-self: stretch;
+}
+
+.window-controls button {
+  width: 39px;
+  border: 0;
+  border-left: 1px solid #21617a;
+  background: transparent;
+  color: #00c9ed;
+  font-size: 23px;
+  cursor: pointer;
+}
+
+.window-controls button:hover {
+  background: #15516a;
+}
+
+.window-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 9px 14px;
+  border-bottom: 1px solid #164158;
+  background: #091a28;
+  color: #76a5bb;
   font-family: "Share Tech Mono", monospace;
   font-size: 9px;
 }
 
-.application-card h3 {
-  margin: 22px 0 7px;
-  color: #cfe8f4;
-  font-family: "Share Tech Mono", monospace;
-  font-size: 14px;
-  letter-spacing: 1px;
+.toolbar-path {
+  margin-left: auto;
+  color: #00c9ed;
 }
 
-.card-subtitle {
+.desktop-window-content {
+  padding: 24px;
+  overflow: auto;
+}
+
+.desktop-window-content > h1 {
   margin: 0;
-  color: #15b7d9;
-  font-size: 13px;
+  color: #dceef7;
+  font-size: clamp(23px, 3vw, 32px);
+  line-height: 1.2;
+  font-weight: 500;
 }
 
-.card-description {
-  max-width: 380px;
-  margin: 12px 0 0;
-  color: #87a9ba;
-  font-size: 13px;
-  line-height: 1.7;
-}
-
-.card-arrow {
-  position: absolute;
-  top: 22px;
-  right: 22px;
-  color: var(--cyan);
-  opacity: 0;
-  transition: opacity 160ms ease;
-}
-
-.application-card:hover .card-arrow {
-  opacity: 1;
-}
-
-.current-project {
-  display: grid;
-  grid-template-columns: 180px 1fr;
-  gap: 25px;
-  padding: 30px;
-  border: 1px solid var(--border-bright);
-  background: linear-gradient(110deg, #0c2939, #06121d 80%);
-  box-shadow: inset 0 0 25px #00c9ed09;
-}
-
-.project-label {
-  display: flex;
-  align-items: flex-start;
-  gap: 9px;
-  color: #17c6e6;
-  font-family: "Share Tech Mono", monospace;
-  font-size: 10px;
-  line-height: 1.6;
-}
-
-.project-label .status-light {
-  flex-shrink: 0;
-  margin-top: 4px;
-}
-
-.current-project .eyebrow {
-  margin-bottom: 12px;
-}
-
-.current-project h2 {
-  font-size: 24px;
-}
-
-.current-project p:not(.eyebrow) {
+.window-intro {
   max-width: 650px;
-  color: #94b6c7;
-  font-size: 14px;
+  margin: 12px 0 22px;
+  color: #8faebf;
+  font-size: 13px;
   line-height: 1.8;
 }
 
-.project-index {
-  grid-column: 2;
-  color: #8bb4c7;
-  font-family: "Share Tech Mono", monospace;
-  font-size: 10px;
-  letter-spacing: 1px;
+.desktop-window .record {
+  margin-bottom: 7px;
+  border: 1px solid #174359;
+  background: #081a27;
 }
 
-.footer {
+.desktop-window .record p {
+  white-space: pre-line;
+}
+
+.desktop-taskbar {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  min-height: 42px;
   display: flex;
-  justify-content: space-between;
-  gap: 15px;
-  padding: 26px 0;
-  margin-top: 30px;
-  border-top: 1px solid #14516b;
-  color: #65899d;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 10px;
+  border-top: 1px solid #14718d;
+  background: #07131f;
+}
+
+.taskbar-home {
+  width: 34px;
+  height: 30px;
+  border: 1px solid #12617e;
+  background: #0c2939;
+  color: #00c9ed;
+  font-family: "Share Tech Mono", monospace;
+  cursor: pointer;
+}
+
+.taskbar-apps {
+  flex: 1;
+  min-width: 0;
+}
+
+.taskbar-item {
+  max-width: 260px;
+  overflow: hidden;
+  padding: 8px 12px;
+  border: 1px solid transparent;
+  background: #0b1c29;
+  color: #8db7ca;
   font-family: "Share Tech Mono", monospace;
   font-size: 9px;
-  letter-spacing: 0.5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.taskbar-active {
+  border-color: #12617e;
+  background: #103247;
+  color: #00c9ed;
+}
+
+.taskbar-clock {
+  color: #00c9ed;
+  font-family: "Share Tech Mono", monospace;
+  font-size: 10px;
 }
 
 @media (max-width: 640px) {
-  .workstation {
-    width: calc(100% - 28px);
+  .desktop-area {
+    padding: 15px 10px;
   }
 
-  .topbar {
-    min-height: 72px;
+  .desktop-icons {
+    grid-template-columns: repeat(2, 82px);
+    width: auto;
+    justify-items: start;
+    gap: 5px;
   }
 
-  .brand-caption {
+  .desktop-window {
+    position: fixed;
+    z-index: 4;
+    top: 60px;
+    left: 10px;
+    width: calc(100% - 20px);
+    max-height: calc(100vh - 115px);
+  }
+
+  .desktop-window-content {
+    padding: 17px 12px;
+  }
+
+  .desktop-hint {
+    display: none;
+  }
+
+  .desktop-status {
     font-size: 8px;
   }
 
-  .system-status {
+  .taskbar-clock {
     font-size: 8px;
-  }
-
-  .hero {
-    padding: 58px 20px 45px;
-  }
-
-  .hero h1 {
-    letter-spacing: -1px;
-  }
-
-  .hero-description {
-    font-size: 14px;
-  }
-
-  .section-heading {
-    align-items: start;
-  }
-
-  .application-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .application-card {
-    min-height: 195px;
-  }
-
-  .current-project {
-    grid-template-columns: 1fr;
-    gap: 20px;
-    padding: 22px;
-  }
-
-  .project-index {
-    grid-column: 1;
-  }
-
-  .footer {
-    flex-direction: column;
-    line-height: 1.7;
   }
 }
