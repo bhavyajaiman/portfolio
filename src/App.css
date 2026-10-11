@@ -1,0 +1,399 @@
+
+@import url("https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Roboto+Condensed:wght@400;500;600;700&display=swap");
+
+:root {
+  font-family: "Roboto Condensed", sans-serif;
+  color: #c8e4f1;
+  background: #030a12;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  font-weight: 400;
+
+  --bg: #030810;
+  --panel: #081824;
+  --panel-light: #102b3c;
+  --border: #12617e;
+  --border-bright: #12c9ed;
+  --cyan: #00c9ed;
+  --text: #c8e4f1;
+  --muted: #7199ae;
+  --yellow: #c7d34b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 3px,
+      #8acbe006 4px
+    ),
+    radial-gradient(ellipse at 50% 0%, #0a2638 0%, transparent 58%),
+    var(--bg);
+}
+
+.workstation {
+  width: min(1240px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+.topbar {
+  min-height: 76px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  border-bottom: 1px solid var(--border-bright);
+  background: #07131f;
+  box-shadow: 0 2px 16px #00c9ed12;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--border-bright);
+  background: #0b2637;
+  color: var(--cyan);
+  font-family: "Share Tech Mono", monospace;
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.brand-name {
+  margin: 0 0 5px;
+  color: #d8edf7;
+  font-family: "Share Tech Mono", monospace;
+  font-size: 14px;
+  letter-spacing: 1.4px;
+}
+
+.brand-caption {
+  margin: 0;
+  color: var(--muted);
+  font-family: "Share Tech Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+}
+
+.system-status {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--cyan);
+  font-family: "Share Tech Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.status-light {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #00e7ff;
+  box-shadow: 0 0 10px #00c9edaa;
+}
+
+.hero {
+  position: relative;
+  padding: 80px 42px 68px;
+  border-right: 1px solid #12617e66;
+  border-bottom: 1px solid var(--border);
+  border-left: 1px solid #12617e66;
+  background: linear-gradient(110deg, #071824e8, #030a12f2 80%);
+}
+
+.eyebrow {
+  margin: 0 0 20px;
+  color: var(--cyan);
+  font-family: "Share Tech Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+}
+
+.hero h1 {
+  max-width: 900px;
+  margin: 0;
+  color: #e2f1f8;
+  font-size: clamp(40px, 7vw, 78px);
+  line-height: 1.08;
+  font-weight: 700;
+  letter-spacing: -1.7px;
+  text-shadow: 0 0 24px #00bce91b;
+}
+
+.hero h1 span {
+  color: #12c9ed;
+}
+
+.hero-description {
+  max-width: 620px;
+  margin: 25px 0;
+  color: #91b7ca;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.hero-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 28px;
+}
+
+.hero-tags span {
+  padding: 9px 11px;
+  border: 1px solid #15536e;
+  background: #071b29;
+  color: #8ccce1;
+  font-family: "Share Tech Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.6px;
+}
+
+.applications {
+  padding: 48px 0;
+}
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.section-heading .eyebrow {
+  margin-bottom: 10px;
+}
+
+.section-heading h2,
+.current-project h2 {
+  margin: 0;
+  color: #d8edf7;
+  font-size: clamp(23px, 4vw, 31px);
+  font-weight: 600;
+}
+
+.file-count {
+  padding-bottom: 5px;
+  color: #6e9eb5;
+  font-family: "Share Tech Mono", monospace;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.application-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 13px;
+}
+
+.application-card {
+  position: relative;
+  min-height: 218px;
+  padding: 23px;
+  border: 1px solid #14516b;
+  background:
+    linear-gradient(135deg, #0d2636, #06121e 75%);
+  box-shadow: inset 0 0 20px #0089b00a;
+  transition: border-color 160ms ease, background 160ms ease;
+}
+
+.application-card:hover {
+  border-color: var(--border-bright);
+  background: linear-gradient(135deg, #10364a, #071824 80%);
+  box-shadow: inset 0 0 24px #00c9ed0b, 0 0 12px #00c9ed14;
+}
+
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app-icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #1684a4;
+  background: #082637;
+  color: #12c9ed;
+  font-size: 21px;
+}
+
+.app-id {
+  color: #648ca2;
+  font-family: "Share Tech Mono", monospace;
+  font-size: 9px;
+}
+
+.application-card h3 {
+  margin: 22px 0 7px;
+  color: #cfe8f4;
+  font-family: "Share Tech Mono", monospace;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.card-subtitle {
+  margin: 0;
+  color: #15b7d9;
+  font-size: 13px;
+}
+
+.card-description {
+  max-width: 380px;
+  margin: 12px 0 0;
+  color: #87a9ba;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.card-arrow {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  color: var(--cyan);
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+
+.application-card:hover .card-arrow {
+  opacity: 1;
+}
+
+.current-project {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 25px;
+  padding: 30px;
+  border: 1px solid var(--border-bright);
+  background: linear-gradient(110deg, #0c2939, #06121d 80%);
+  box-shadow: inset 0 0 25px #00c9ed09;
+}
+
+.project-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  color: #17c6e6;
+  font-family: "Share Tech Mono", monospace;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.project-label .status-light {
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.current-project .eyebrow {
+  margin-bottom: 12px;
+}
+
+.current-project h2 {
+  font-size: 24px;
+}
+
+.current-project p:not(.eyebrow) {
+  max-width: 650px;
+  color: #94b6c7;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.project-index {
+  grid-column: 2;
+  color: #8bb4c7;
+  font-family: "Share Tech Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 26px 0;
+  margin-top: 30px;
+  border-top: 1px solid #14516b;
+  color: #65899d;
+  font-family: "Share Tech Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.5px;
+}
+
+@media (max-width: 640px) {
+  .workstation {
+    width: calc(100% - 28px);
+  }
+
+  .topbar {
+    min-height: 72px;
+  }
+
+  .brand-caption {
+    font-size: 8px;
+  }
+
+  .system-status {
+    font-size: 8px;
+  }
+
+  .hero {
+    padding: 58px 20px 45px;
+  }
+
+  .hero h1 {
+    letter-spacing: -1px;
+  }
+
+  .hero-description {
+    font-size: 14px;
+  }
+
+  .section-heading {
+    align-items: start;
+  }
+
+  .application-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .application-card {
+    min-height: 195px;
+  }
+
+  .current-project {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 22px;
+  }
+
+  .project-index {
+    grid-column: 1;
+  }
+
+  .footer {
+    flex-direction: column;
+    line-height: 1.7;
+  }
+}
