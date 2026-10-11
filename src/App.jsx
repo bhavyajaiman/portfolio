@@ -1,4 +1,4 @@
-
+import { Rnd } from "react-rnd";
 import { useState } from "react";
 import "./App.css";
 
@@ -145,21 +145,68 @@ const windowContent = {
 };
 
 
-function App() {
-  const [activeWindow, setActiveWindow] = useState(null);
-  const [minimized, setMinimized] = useState(false);
-  const [expandedItems, setExpandedItems] = useState([]);
 
+function App() {
+  const [openWindows, setOpenWindows] = useState([]);
+  const [activeWindow, setActiveWindow] = useState(null);
+  const [minimizedWindows, setMinimizedWindows] = useState([]);
+  const [expandedItems, setExpandedItems] = useState([]);
+  const getWindowLayout = (id, index) =>
+    windowLayouts[id] ?? {
+      x: Math.min(145 + index * 28, 220),
+      y: 35 + index * 24,
+      width: 820,
+      height: 560,
+    };
+  const [windowLayouts, setWindowLayouts] = useState({});
   const openWindow = (id) => {
+    setOpenWindows((previous) =>
+      previous.includes(id) ? previous : [...previous, id]
+    );
+    setMinimizedWindows((previous) =>
+      previous.filter((item) => item !== id)
+    );
     setActiveWindow(id);
-    setMinimized(false);
-    setExpandedItems([]);
   };
 
-  const closeWindow = () => {
-    setActiveWindow(null);
-    setMinimized(false);
-    setExpandedItems([]);
+  const closeWindow = (id) => {
+    const remaining = openWindows.filter((item) => item !== id);
+
+    setOpenWindows(remaining);
+    setMinimizedWindows((previous) =>
+      previous.filter((item) => item !== id)
+    );
+    setExpandedItems((previous) =>
+      previous.filter((item) => !item.startsWith(`${id}-`))
+    );
+
+    if (activeWindow === id) {
+      const visible = remaining.filter(
+        (item) => !minimizedWindows.includes(item)
+      );
+      setActiveWindow(visible.at(-1) ?? null);
+    }
+  };
+
+  const minimizeWindow = (id) => {
+    setMinimizedWindows((previous) =>
+      previous.includes(id) ? previous : [...previous, id]
+    );
+
+    if (activeWindow === id) {
+      const visible = openWindows.filter(
+        (item) =>
+          item !== id && !minimizedWindows.includes(item)
+      );
+      setActiveWindow(visible.at(-1) ?? null);
+    }
+  };
+
+  const restoreWindow = (id) => {
+    setMinimizedWindows((previous) =>
+      previous.filter((item) => item !== id)
+    );
+    setActiveWindow(id);
   };
 
   const toggleItem = (id) => {
@@ -170,30 +217,27 @@ function App() {
     );
   };
 
-  const currentContent = activeWindow
-    ? windowContent[activeWindow]
-    : null;
-
-  const renderCV = () => (
+  const renderCV = (content, windowId) => (
     <div className="cv-tree">
-      {currentContent.sections.map((section) => {
-        const sectionOpen = expandedItems.includes(section.id);
+      {content.sections.map((section) => {
+        const sectionId = `${windowId}-${section.id}`;
+        const sectionOpen = expandedItems.includes(sectionId);
 
         return (
           <section className="tree-section" key={section.id}>
             <button
               className="tree-heading"
-              onClick={() => toggleItem(section.id)}
+              onClick={() => toggleItem(sectionId)}
               aria-expanded={sectionOpen}
             >
-              <span>{sectionOpen ? "▾" : "▸"}</span>
+              <span>{sectionOpen ? "−" : "+"}</span>
               <span>{section.title}</span>
             </button>
 
             {sectionOpen && (
               <div className="tree-children">
                 {section.entries.map((entry, index) => {
-                  const entryId = `${section.id}-${index}`;
+                  const entryId = `${sectionId}-${index}`;
                   const entryOpen = expandedItems.includes(entryId);
 
                   return (
@@ -203,7 +247,7 @@ function App() {
                         onClick={() => toggleItem(entryId)}
                         aria-expanded={entryOpen}
                       >
-                        <span>{entryOpen ? "▾" : "▸"}</span>
+                        <span>{entryOpen ? "−" : "+"}</span>
                         <span className="tree-entry-name">
                           {entry.title}
                         </span>
@@ -217,75 +261,69 @@ function App() {
                       {entryOpen && (
                         <div className="tree-details">
                           {entry.location && (
-                            <p className="detail-meta">
-                              LOCATION: {entry.location}
-                            </p>
+                            <p>LOCATION: {entry.location}</p>
                           )}
 
                           {entry.period && (
-                            <p className="detail-meta">
-                              PERIOD: {entry.period}
-                            </p>
+                            <p>PERIOD: {entry.period}</p>
                           )}
 
-                          {entry.roles ? (
-                            entry.roles.map((role, roleIndex) => {
-                              const roleId =
-                                `${entryId}-role-${roleIndex}`;
-                              const roleOpen =
-                                expandedItems.includes(roleId);
+                          {entry.roles
+                            ? entry.roles.map((role, roleIndex) => {
+                                const roleId =
+                                  `${entryId}-role-${roleIndex}`;
+                                const roleOpen =
+                                  expandedItems.includes(roleId);
 
-                              return (
-                                <div className="tree-role" key={roleId}>
-                                  <button
-                                    className="tree-role-heading"
-                                    onClick={() => toggleItem(roleId)}
-                                    aria-expanded={roleOpen}
-                                  >
-                                    <span>{roleOpen ? "▾" : "▸"}</span>
-                                    <span>{role.title}</span>
-                                    <span className="tree-date">
-                                      {role.period}
-                                    </span>
-                                  </button>
+                                return (
+                                  <div className="tree-role" key={roleId}>
+                                    <button
+                                      className="tree-role-heading"
+                                      onClick={() => toggleItem(roleId)}
+                                      aria-expanded={roleOpen}
+                                    >
+                                      <span>{roleOpen ? "−" : "+"}</span>
+                                      <span>{role.title}</span>
+                                      <span className="tree-date">
+                                        {role.period}
+                                      </span>
+                                    </button>
 
-                                  {roleOpen && (
-                                    <div className="role-details">
-                                      {role.details?.map((detail) => (
-                                        <p key={detail}>{detail}</p>
-                                      ))}
-
-                                      {role.skills && (
-                                        <p>
-                                          <strong>CORE AREAS:</strong>{" "}
-                                          {role.skills}
-                                        </p>
-                                      )}
-
-                                      {role.tools && (
-                                        <p>
-                                          <strong>TOOLS:</strong>{" "}
-                                          {role.tools}
-                                        </p>
-                                      )}
-                                    </div>
-                                  )}
-                                </div>
-                              );
-                            })
-                          ) : (
-                            <>
-                              {entry.details?.map((detail) => (
-                                <p key={detail}>{detail}</p>
-                              ))}
-                              {entry.skills && (
-                                <p><strong>SKILLS:</strong> {entry.skills}</p>
-                              )}
-                              {entry.tools && (
-                                <p><strong>TOOLS:</strong> {entry.tools}</p>
-                              )}
-                            </>
-                          )}
+                                    {roleOpen && (
+                                      <div className="role-details">
+                                        {role.details?.map((detail) => (
+                                          <p key={detail}>{detail}</p>
+                                        ))}
+                                        {role.skills && (
+                                          <p>
+                                            <strong>CORE AREAS:</strong>{" "}
+                                            {role.skills}
+                                          </p>
+                                        )}
+                                        {role.tools && (
+                                          <p>
+                                            <strong>TOOLS:</strong>{" "}
+                                            {role.tools}
+                                          </p>
+                                        )}
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              })
+                            : (
+                              <>
+                                {entry.details?.map((detail) => (
+                                  <p key={detail}>{detail}</p>
+                                ))}
+                                {entry.skills && (
+                                  <p><strong>SKILLS:</strong> {entry.skills}</p>
+                                )}
+                                {entry.tools && (
+                                  <p><strong>TOOLS:</strong> {entry.tools}</p>
+                                )}
+                              </>
+                            )}
                         </div>
                       )}
                     </div>
@@ -306,7 +344,6 @@ function App() {
           <span className="brand-mark">B.</span>
           <span>BHAVYA JAIMAN</span>
         </div>
-
         <div className="desktop-status">
           <span className="status-light" />
           SYSTEM ONLINE
@@ -325,108 +362,162 @@ function App() {
               key={app.id}
               onClick={() => openWindow(app.id)}
             >
-              <span className="desktop-icon-symbol">
-                {app.icon}
-              </span>
+              <span className="desktop-icon-symbol">{app.icon}</span>
               <span>{app.title}</span>
             </button>
           ))}
         </div>
 
-        {!activeWindow && (
+        {openWindows.length === 0 && (
           <div className="desktop-hint">
             SELECT AN APPLICATION TO OPEN
           </div>
         )}
 
-        {activeWindow && !minimized && currentContent && (
-          <section className="desktop-window">
-            <header className="window-titlebar">
-              <div className="window-title">
-                <span className="window-indicator" />
-                {currentContent.label}
-              </div>
 
-              <div className="window-controls">
-                <button
-                  onClick={() => setMinimized(true)}
-                  aria-label="Minimize window"
-                  title="Minimize"
-                >
-                  −
-                </button>
-                <button
-                  onClick={closeWindow}
-                  aria-label="Close window"
-                  title="Close"
-                >
-                  ×
-                </button>
-              </div>
-            </header>
+        {openWindows.map((id, index) => {
+          const content = windowContent[id];
+          const isMinimized = minimizedWindows.includes(id);
+          const isActive = activeWindow === id;
 
-            <div className="window-toolbar">
-              <span>FILE</span>
-              <span>VIEW</span>
-              <span>HELP</span>
-              <span className="toolbar-path">
-                /{activeWindow.toUpperCase()}
-              </span>
-            </div>
+          if (isMinimized || !content) return null;
 
-            <div className="desktop-window-content">
-              <p className="eyebrow">
-                DATABASE / {activeWindow.toUpperCase()}
-              </p>
+          const layout = getWindowLayout(id, index);
 
-              <h1>{currentContent.heading}</h1>
-              <p className="window-intro">{currentContent.intro}</p>
+          return (
+            <Rnd
+              key={id}
+              className={`desktop-window-rnd ${
+                isActive ? "window-active" : ""
+              }`}
+              position={{ x: layout.x, y: layout.y }}
+              size={{ width: layout.width, height: layout.height }}
+              minWidth={320}
+              minHeight={260}
+              bounds="parent"
+              dragHandleClassName="window-titlebar"
+              onDragStart={() => setActiveWindow(id)}
+              onDragStop={(_, data) => {
+                setWindowLayouts((previous) => ({
+                  ...previous,
+                  [id]: {
+                    ...getWindowLayout(id, index),
+                    x: data.x,
+                    y: data.y,
+                  },
+                }));
+              }}
+              onResizeStart={() => setActiveWindow(id)}
+              onResizeStop={(_, __, ref, ___, position) => {
+                setWindowLayouts((previous) => ({
+                  ...previous,
+                  [id]: {
+                    x: position.x,
+                    y: position.y,
+                    width: ref.offsetWidth,
+                    height: ref.offsetHeight,
+                  },
+                }));
+              }}
+              onMouseDown={() => setActiveWindow(id)}
+              style={{ zIndex: isActive ? 20 : 10 + index }}
+            >
+              <section className="desktop-window">
+                <header className="window-titlebar">
+                  <div className="window-title">
+                    <span className="window-indicator" />
+                    {content.label}
+                  </div>
 
-              {activeWindow === "cv" && currentContent.sections ? (
-                renderCV()
-              ) : (
-                <div className="record-list">
-                  {currentContent.records?.map(
-                    ([number, title, description]) => (
-                      <article className="record" key={number}>
-                        <span className="record-number">{number}</span>
-                        <div>
-                          <h3>{title}</h3>
-                          <p>{description}</p>
-                        </div>
-                      </article>
-                    )
+                  <div className="window-controls">
+                    <button
+                      onClick={() => minimizeWindow(id)}
+                      aria-label="Minimize window"
+                    >
+                      _
+                    </button>
+                    <button
+                      onClick={() => closeWindow(id)}
+                      aria-label="Close window"
+                    >
+                      ×
+                    </button>
+                  </div>
+                </header>
+
+                <div className="window-toolbar">
+                  <span>FILE</span>
+                  <span>VIEW</span>
+                  <span>HELP</span>
+                  <span className="toolbar-path">
+                    /{id.toUpperCase()}
+                  </span>
+                </div>
+
+                <div className="desktop-window-content">
+                  <p className="eyebrow">
+                    DATABASE / {id.toUpperCase()}
+                  </p>
+
+                  <h1>{content.heading}</h1>
+
+                  <p className="window-intro">{content.intro}</p>
+
+                  {id === "cv" && content.sections ? (
+                    renderCV(content, id)
+                  ) : (
+                    <div className="record-list">
+                      {content.records?.map(
+                        ([number, title, description]) => (
+                          <article className="record" key={number}>
+                            <span className="record-number">{number}</span>
+                            <div>
+                              <h3>{title}</h3>
+                              <p>{description}</p>
+                            </div>
+                          </article>
+                        )
+                      )}
+                    </div>
                   )}
                 </div>
-              )}
-            </div>
 
-            <footer className="window-statusbar">
-              <span>LOCAL SYSTEM</span>
-              <span>STATUS: READY</span>
-            </footer>
-          </section>
-        )}
+                <footer className="window-statusbar">
+                  <span>LOCAL SYSTEM</span>
+                  <span>STATUS: READY</span>
+                </footer>
+              </section>
+            </Rnd>
+          );
+        })}
+
       </section>
 
       <footer className="desktop-taskbar">
         <button
           className="taskbar-home"
-          onClick={closeWindow}
-          title="Return to desktop"
+          onClick={() => setActiveWindow(null)}
+          title="Show desktop"
         >
           B.
         </button>
 
         <div className="taskbar-apps">
-          {activeWindow && (
+          {openWindows.map((id) => (
             <button
-              className={`taskbar-item ${!minimized ? "taskbar-active" : ""}`}
-              onClick={() => setMinimized(!minimized)}
+              key={id}
+              className={`taskbar-item ${
+                activeWindow === id ? "taskbar-active" : ""
+              } ${minimizedWindows.includes(id) ? "taskbar-minimized" : ""}`}
+              onClick={() =>
+                minimizedWindows.includes(id)
+                  ? restoreWindow(id)
+                  : setActiveWindow(id)
+              }
             >
-              ▣ {windowContent[activeWindow].label}
+              ▣ {windowContent[id]?.label ?? id}
             </button>
-          )}
+          ))}
         </div>
 
         <div className="taskbar-clock">BHAVYA / 001</div>
@@ -434,6 +525,7 @@ function App() {
     </main>
   );
 }
+
 
 
 export default App;

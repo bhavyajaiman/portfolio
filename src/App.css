@@ -1,4 +1,4 @@
-
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap");
 /* Application navigation bar */
 
 .application-bar {
@@ -809,5 +809,247 @@ body,
 
   .taskbar-clock {
     font-size: 8px;
+  }
+}
+
+
+/* Monochrome terminal / desktop theme */
+
+:root {
+  font-family: "IBM Plex Mono", "Courier New", monospace;
+  color: #ededed;
+  background: #050505;
+
+  --bg: #050505;
+  --panel: #101010;
+  --panel-light: #191919;
+  --border: #555555;
+  --border-bright: #dddddd;
+  --cyan: #ffffff;
+  --text: #ededed;
+  --muted: #999999;
+}
+
+body,
+#root,
+.desktop {
+  background: #050505;
+  color: #ededed;
+  font-family: "IBM Plex Mono", "Courier New", monospace;
+}
+
+.desktop {
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 3px,
+      #ffffff04 4px
+    );
+}
+
+.desktop-topbar,
+.desktop-taskbar,
+.window-toolbar,
+.window-statusbar {
+  background: #0b0b0b;
+  border-color: #454545;
+}
+
+.desktop-brand,
+.desktop-status,
+.brand-mark,
+.window-indicator,
+.taskbar-home,
+.taskbar-active {
+  color: #ffffff;
+}
+
+.status-light {
+  background: #ffffff;
+  box-shadow: none;
+}
+
+.brand-mark,
+.desktop-icon-symbol {
+  border-color: #666666;
+  background: #111111;
+  color: #ffffff;
+  box-shadow: none;
+}
+
+.desktop-label,
+.desktop-hint,
+.desktop-status,
+.taskbar-clock {
+  color: #999999;
+}
+
+.desktop-icon {
+  color: #eeeeee;
+}
+
+.desktop-icon:hover,
+.desktop-icon:focus-visible {
+  background: #1a1a1a;
+  border-color: #777777;
+}
+
+.desktop-icon-symbol {
+  background: linear-gradient(135deg, #222222, #080808);
+}
+
+.desktop-window {
+  border-color: #888888;
+  background: #080808;
+  box-shadow: 0 12px 45px #000000cc;
+}
+
+.window-titlebar {
+  background: #171717;
+  border-color: #555555;
+}
+
+.window-title,
+.desktop-window-content > h1 {
+  color: #ffffff;
+}
+
+.window-controls button {
+  color: #eeeeee;
+  border-color: #555555;
+}
+
+.window-controls button:hover {
+  background: #333333;
+  color: #ffffff;
+}
+
+.window-toolbar {
+  color: #aaaaaa;
+}
+
+.toolbar-path,
+.eyebrow,
+.record-number,
+.record-chevron,
+.notice-label {
+  color: #cccccc;
+}
+
+.window-intro,
+.record p,
+.record-toggle-summary,
+.tree-details,
+.role-details {
+  color: #aaaaaa;
+}
+
+.record,
+.tree-section,
+.tree-entry,
+.tree-role {
+  border-color: #3d3d3d;
+  background: #101010;
+}
+
+.record h3,
+.record-toggle-title,
+.tree-heading,
+.tree-entry-heading,
+.tree-role-heading {
+  color: #eeeeee;
+}
+
+.record-toggle:hover,
+.tree-heading:hover,
+.tree-entry-heading:hover,
+.tree-role-heading:hover {
+  background: #222222;
+}
+
+.record-details,
+.notice-panel {
+  background: #101010;
+  border-color: #555555;
+}
+
+.taskbar-home,
+.taskbar-item {
+  border-color: #454545;
+  background: #151515;
+  color: #cccccc;
+}
+
+.taskbar-active {
+  background: #303030;
+  border-color: #aaaaaa;
+}
+
+.taskbar-minimized {
+  opacity: 0.65;
+}
+
+.desktop-window.window-active {
+  border-color: #eeeeee;
+}
+
+.window-titlebar {
+  cursor: default;
+}
+
+.desktop-window-content,
+.desktop-window-content * {
+  font-family: "IBM Plex Mono", "Courier New", monospace;
+}
+
+@media (max-width: 640px) {
+  .desktop-window {
+    left: 10px !important;
+    top: 60px !important;
+    width: calc(100% - 20px);
+    max-height: calc(100vh - 115px);
+  }
+}
+
+
+.desktop-area {
+  position: relative;
+  overflow: hidden;
+}
+
+.desktop-window-rnd {
+  border: 1px solid #888;
+  background: #080808;
+  box-shadow: 0 12px 45px #000b;
+}
+
+.desktop-window-rnd > .desktop-window {
+  position: static;
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  border: 0;
+  box-shadow: none;
+}
+
+.desktop-window-rnd .desktop-window-content {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.desktop-window-rnd .window-titlebar {
+  cursor: grab;
+  user-select: none;
+}
+
+.desktop-window-rnd .window-titlebar:active {
+  cursor: grabbing;
+}
+
+@media (max-width: 640px) {
+  .desktop-window-rnd {
+    max-width: calc(100vw - 20px);
   }
 }
